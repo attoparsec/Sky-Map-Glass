@@ -1,0 +1,18 @@
+Sky Map for Glass
+
+This code is really two different things:
+   * A quick and dirty hack to make Sky Map work better with Google Glass
+   * A new "Continents" layer which shows the outlines of the contents as if the Earth was transparent
+
+The first aspects consists of several small tweaks:
+   * Removed the spash screen
+   * Removed the EULA which couldn't be clicked on
+   * Moved night mode toggle to the options menu
+   * Removed items from the options menu which wouldn't work on Glass
+   * Made the options menu accessible with a single tap
+
+The second uses data from the NOAA National Geophysical Data Center (http://www.ngdc.noaa.gov/mgg_coastline/) to render outlines of the world's landmasses. These are crudely simplified because otherwise the Sky Map renderer would drop many of the lines. The lat/lons are converted to celestial coordinates in a modification to GeocentricCoordinates.java.
+
+Created by Matthew Dockrey (AKA Fish, AKA the Attoparsec guy): gfish@cyphertext.net
+
+The vast majority of the code comes from the original Sky Map: http://code.google.com/p/stardroid/
