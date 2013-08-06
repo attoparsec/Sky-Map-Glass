@@ -22,10 +22,12 @@
       android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
       android:screenOrientation="nosensor"
       android:label="@string/app_name">
+      <!-- 
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
         <category android:name="android.intent.category.LAUNCHER"/>
       </intent-filter>
+      -->
     </activity>
 
     <activity android:name=".activities.DynamicStarMapActivity"
@@ -50,9 +52,11 @@
       android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
     <!-- Provides search suggestions. -->
     <!-- TODO(johntaylor): What does syncable do? -->
+    <!-- 
     <provider android:name="com.google.android.stardroid.search.SearchTermsProvider"
       android:authorities="com.google.android.stardroid.searchterms"
       android:syncable="false"/>
+      -->
     <activity android:name=".activities.ControlPanelActivity"/>
 
 </application>

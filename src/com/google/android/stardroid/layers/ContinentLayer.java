@@ -80,14 +80,13 @@ public class ContinentLayer extends AbstractSourceLayer {
     // Due to a bug in the G1 rendering code text and lines render in different
     // colors.
     private static final int LINE_COLOR = Color.argb(120, 86, 176, 245);
-    private static final long UPDATE_FREQ_MS = 1 * TimeConstants.MILLISECONDS_PER_SECOND;
+    private static final long UPDATE_FREQ_MS = 3600 * TimeConstants.MILLISECONDS_PER_SECOND;
 
     private ArrayList<List> latlongs = new ArrayList<List>();
     private final ArrayList<LineSource> lineSources = new ArrayList<LineSource>();
     private final AstronomerModel model;
 
     private long lastUpdateTimeMs = 0L;
-    private int updated = 0;
 
     public ContinentSource(AstronomerModel model, AssetManager assetManager, Resources res) {
       this.model = model;
@@ -138,20 +137,26 @@ public class ContinentLayer extends AbstractSourceLayer {
     }
 
     private void updateCoords() {
-      // Blog.d(this, "Updating Coords: " + (model.getTime().getTime() - lastUpdateTimeMs));
+      //Blog.d(this, "Updating Coords: " + (model.getTime().getTime() - lastUpdateTimeMs));
 
-      this.lastUpdateTimeMs = model.getTime().getTime();
+    	LatLong loc = model.getLocation();
 
-      for (int i = 0; i < lineSources.size(); i++)
-      {
-          List<GeocentricCoordinates> verticesCelestial = lineSources.get(i).getVertices();
-          List<LatLong> verticesTerrestial = latlongs.get(i);
+    	// Location defaults to 0,0
+    	// At the risk of breaking this feature while standing exactly there, we won't update at those coords
+    	// (Can't update regularly, too slow.)
+    	if (loc.latitude != 0 || loc.longitude != 0)
+    	{
+    		this.lastUpdateTimeMs = model.getTime().getTime();
+
+    		for (int i = 0; i < lineSources.size(); i++) {
+    			List<GeocentricCoordinates> verticesCelestial = lineSources.get(i).getVertices();
+    			List<LatLong> verticesTerrestial = latlongs.get(i);
           
-    	  for (int j = 0; j < verticesCelestial.size(); j++)
-    	  {
-    		  verticesCelestial.get(j).updateFromLatLong(model.getTime(), model.getLocation(), verticesTerrestial.get(j));
-    	  }
-      }
+    			for (int j = 0; j < verticesCelestial.size(); j++) {
+    				verticesCelestial.get(j).updateFromLatLong(model.getTime(), loc, verticesTerrestial.get(j));
+    			}
+    		}
+    	}
     }
 
     @Override
@@ -164,15 +169,11 @@ public class ContinentLayer extends AbstractSourceLayer {
     public EnumSet<UpdateType> update() {
       EnumSet<UpdateType> updateTypes = EnumSet.noneOf(UpdateType.class);
 
-      // TODO(brent): Add distance here.
-      // Need this to run at first, or else the coordinates aren't adjusted to location/time properly
-      // ...but then it just needlessly slows everything down
-      // HACK!
-      if (Math.abs(model.getTime().getTime() - lastUpdateTimeMs) > UPDATE_FREQ_MS && updated < 5) {
+      if (Math.abs(model.getTime().getTime() - lastUpdateTimeMs) > UPDATE_FREQ_MS) {
         updateCoords();
         updateTypes.add(UpdateType.UpdatePositions);
-        updated++;
       }
+
       return updateTypes;
     }
 
