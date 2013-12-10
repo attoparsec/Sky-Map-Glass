@@ -406,4 +406,5 @@
     <string name="ursids" translation_description="Meteor Shower">Ursids</string>
     <string name="show_continent_pref">Continents</string>
     <string name="night_mode_pref">Night mode</string>
+    <string name="glass_voice_trigger">show a sky map</string>
 </resources>
